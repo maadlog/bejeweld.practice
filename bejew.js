@@ -13,7 +13,7 @@ $(document).ready(function(){
     var rows = Math.round(w/slotSize);
     var columns = Math.round(h/slotSize);
     var game_loop;
-    var possible_colors = ["red","green","blue"];
+    var possible_gems = ["#grape","#lemon","#orange","#diamond"];
     var selected = [];
 
     function getRandomIntInclusive(min, max) {
@@ -21,8 +21,8 @@ $(document).ready(function(){
     }
 
 
-    function getRandomColor(){
-        return possible_colors[getRandomIntInclusive(0,2)];
+    function getRandomGem(){
+        return possible_gems[getRandomIntInclusive(0,3)];
     }
 
 
@@ -36,7 +36,7 @@ $(document).ready(function(){
         for(i=0;i<rows;i++){
             grid[i]=[];
             for(j=0;j<columns;j++){
-                grid[i][j] = getRandomColor();
+                grid[i][j] = getRandomGem();
             }
         }
 
@@ -63,8 +63,8 @@ $(document).ready(function(){
 
     function paint_cell(x, y,color)
     {
-        ctx.fillStyle = color;
-        ctx.fillRect(x*slotSize, y*slotSize, slotSize, slotSize);
+        var item = $(color);
+        ctx.drawImage(item,x*slotSize, y*slotSize);
         ctx.strokeStyle = "white";
         ctx.strokeRect(x*slotSize, y*slotSize, slotSize, slotSize);
     }
@@ -84,7 +84,7 @@ $(document).ready(function(){
     function jwl_select(coord){
         var x = Math.round((coord.x + slotSize/2) * rows / w)-1;
         var y = Math.round((coord.y + slotSize/2 ) * columns / h)-1;
-        
+
         selected.push({x:x,y:y,color: grid[x][y]});
     }
 
