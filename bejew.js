@@ -100,9 +100,9 @@ $(document).ready(function(){
         cellB.selected = false;
     }
 
-    function jwl_select(coord){
-        var x = coord.x;
-        var y = coord.y;
+    function jwl_select(selected_cell){
+        var x = selected_cell.x;
+        var y = selected_cell.y;
 
         selected.push({x:x,y:y,color: grid[x][y].color});
         grid[x][y].selected = true;
@@ -123,17 +123,16 @@ $(document).ready(function(){
         return ((difX == 1 && difY == 0) || (difX == 0 && difY == 1));
     }
 
-
     init();
 
     $(document).on("click",function(event){
 
         var rect = canvas.getBoundingClientRect();
-        var coord = {
+        var selected_cell = {
             x: Math.round(((event.clientX - rect.left) + slotSize/2) * rows / w)-1,
             y: Math.round(((event.clientY - rect.top) + slotSize/2 ) * columns / h)-1
         };
-        if (is_next_to(selected[0],coord) || !selected[0]) jwl_select(coord);
+        if (is_next_to(selected[0],selected_cell) || !selected[0]) jwl_select(selected_cell);
 
     });
 
