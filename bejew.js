@@ -13,19 +13,38 @@ $(document).ready(function(){
     var rows = Math.round(w/slotSize);
     var columns = Math.round(h/slotSize);
     var game_loop;
-    var possible_gems = ["#grape","#lemon","#orange","#diamond"];
+    var possible_colors = ["#5622AF","#CD0024","#008580","#DAB500","#DA4700","#9F007C"];
     var selected = [];
+    var score;
 
+    //Auxiliar functions
     function getRandomIntInclusive(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function getRandomColor(){
+        return possible_colors[getRandomIntInclusive(0,5)];
+    }
 
-    function getRandomGem(){
-        return possible_gems[getRandomIntInclusive(0,3)];
+    function paint_cell(x, y,color)
+    {
+        ctx.fillStyle = color;
+        ctx.fillRect(x*slotSize, y*slotSize,slotSize,slotSize);
+        ctx.strokeStyle = "white";
+        ctx.strokeRect(x*slotSize, y*slotSize, slotSize, slotSize);
+    }
+
+    function darken(color){
+        return shadeColor(color,0.5);
+    }
+
+    function shadeColor(color, percent) {
+        var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+        return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
     }
 
 
+    //Game Functions
 
     function init(){
 
@@ -36,13 +55,11 @@ $(document).ready(function(){
         for(i=0;i<rows;i++){
             grid[i]=[];
             for(j=0;j<columns;j++){
-                grid[i][j] = getRandomGem();
+                grid[i][j] = {x:i,y:j,color:getRandomColor(),selected:false};
             }
         }
 
     }
-
-    init();
 
     function render(){
         ctx.fillStyle = "white";
@@ -55,38 +72,52 @@ $(document).ready(function(){
         var i,j = 0;
         for(i=0;i<rows;i++){
             for(j=0;j<columns;j++){
-                var col = grid[i][j];
-                paint_cell(i,j,col);
+                var cell = grid[i][j];
+                if (cell.selected) paint_cell(i,j,darken(cell.color));
+                else paint_cell(i,j,cell.color);
             }
         }
-    }
-
-    function paint_cell(x, y,color)
-    {
-        var item = $(color);
-        ctx.drawImage(item,x*slotSize, y*slotSize);
-        ctx.strokeStyle = "white";
-        ctx.strokeRect(x*slotSize, y*slotSize, slotSize, slotSize);
     }
 
     function updateGrid(){
         if (selected.length==2){
             jwl_swap(selected[0],selected[1]);
+
+            if (jwl_did_score(selected[0])) score++;
+
+            if (jwl_did_score(selected[1])) score++;
+
             selected = [];
         }
     }
 
-    function  jwl_swap(fst,snd){
-        grid[fst.x][fst.y] = snd.color;
-        grid[snd.x][snd.y] = fst.color;
+    function jwl_swap(fst,snd){
+        var cellA =  grid[fst.x][fst.y];
+        var cellB = grid[snd.x][snd.y];
+        cellA.color = snd.color;
+        cellB.color = fst.color;
+        cellA.selected = false;
+        cellB.selected = false;
     }
 
     function jwl_select(coord){
         var x = Math.round((coord.x + slotSize/2) * rows / w)-1;
         var y = Math.round((coord.y + slotSize/2 ) * columns / h)-1;
 
-        selected.push({x:x,y:y,color: grid[x][y]});
+        selected.push({x:x,y:y,color: grid[x][y].color});
+        grid[x][y].selected = true;
     }
+
+    function jwl_did_score(jewel){
+        var c = jewel.color;
+        var scored = false;
+
+        return true;
+    }
+
+
+
+    init();
 
     $(document).on("click",function(event){
 
@@ -100,16 +131,6 @@ $(document).ready(function(){
 
     });
 
-    function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
-    }
 
-    function insideCanvas(coord){
-        return true;
-    }
 
 });
