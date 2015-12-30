@@ -101,8 +101,8 @@ $(document).ready(function(){
     }
 
     function jwl_select(coord){
-        var x = Math.round((coord.x + slotSize/2) * rows / w)-1;
-        var y = Math.round((coord.y + slotSize/2 ) * columns / h)-1;
+        var x = coord.x;
+        var y = coord.y;
 
         selected.push({x:x,y:y,color: grid[x][y].color});
         grid[x][y].selected = true;
@@ -111,10 +111,17 @@ $(document).ready(function(){
     function jwl_did_score(jewel){
         var c = jewel.color;
         var scored = false;
-
+        //TODO
         return true;
     }
 
+    function is_next_to(jewelA,jewelB){
+        if (!jewelA) return false;
+        var difX = Math.abs(jewelA.x - jewelB.x);
+        var difY = Math.abs(jewelA.y - jewelB.y);
+
+        return ((difX == 1 && difY == 0) || (difX == 0 && difY == 1));
+    }
 
 
     init();
@@ -123,11 +130,10 @@ $(document).ready(function(){
 
         var rect = canvas.getBoundingClientRect();
         var coord = {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
+            x: Math.round(((event.clientX - rect.left) + slotSize/2) * rows / w)-1,
+            y: Math.round(((event.clientY - rect.top) + slotSize/2 ) * columns / h)-1
         };
-
-        jwl_select(coord);
+        if (is_next_to(selected[0],coord) || !selected[0]) jwl_select(coord);
 
     });
 
