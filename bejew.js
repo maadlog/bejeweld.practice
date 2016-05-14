@@ -23,17 +23,17 @@ $(document).ready(function(){
     var selected = [];
     var score = 0;
 
-    var just_color = false;
+    var images = false;
     var candy_color = false;
     var black_stroke = false;
 
     //Jewel Images
     var jewel_images = [
-	    $('#thing0'),
-	    $('#thing1'),
-    	$('#thing2'),
-    	$('#thing3'),
-    	$('#thing4')
+	    $('#bell'),
+	    $('#banana'),
+    	$('#orange'),
+    	$('#apple'),
+    	$('#cherry')
     ];
 
     //Prototypes
@@ -56,7 +56,7 @@ $(document).ready(function(){
         	ctx.fillRect(this.x*slotSize, this.y*slotSize,slotSize,slotSize);
 
     		var img = jewel_images[this.color.pos];
-    		if(img && !just_color)
+    		if(img && images)
     			ctx.drawImage(img[0],this.x*slotSize, this.y*slotSize,slotSize,slotSize)
 
         	black_stroke ? ctx.strokeStyle = "black" : ctx.strokeStyle = "white";
@@ -142,7 +142,7 @@ $(document).ready(function(){
 
         updateGrid();
 
-        just_color = $('#just_color')[0].checked;
+        images = $('#images')[0].checked;
         candy_color = $('#candy_color')[0].checked;
 		black_stroke = $('#black_stroke')[0].checked;
          
