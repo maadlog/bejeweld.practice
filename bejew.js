@@ -65,7 +65,7 @@ $(document).ready(function(){
 
     	this.replace_color = function(){
     		var next = this.color.pos + getRandomIntInclusive(1,3);
-    		next = (next > 4)? next -4 : next;
+    		next = (next >= 5)? next -5 : next;
     		grid[this.x][this.y].color = possible_colors[next];
     	}
     }
